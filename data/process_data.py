@@ -39,7 +39,7 @@ def clean_data(df):
 def save_data(df, database_filename):
     sql_str = 'sqlite:///' + database_filename
     engine = create_engine(sql_str)
-    df.to_sql('database_filename', engine, index=False)
+    df.to_sql(database_filename, engine, index=False)
 
 
 def main():
