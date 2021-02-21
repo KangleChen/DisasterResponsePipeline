@@ -29,11 +29,12 @@ def load_data(database_filepath):
     """
     Load data from database
     Input: 
-    database_filepath (string): file path of the database 
+        database_filepath (string): file path of the database 
 
     Output:
-    X (matrix): X for training model 
-    y (matrix): y for taining model 
+        X (matrix): X for training model 
+        y (matrix): y for taining model 
+        category_names (list): list of category names 
     """
 
     path_str = 'sqlite:///' + database_filepath
@@ -42,17 +43,19 @@ def load_data(database_filepath):
     df = pd.read_sql_table(table_name, con = engine)
     X = df.iloc[:,1].values
     y = df.iloc[:,5:-1].values
-    return X,y
+    category_names = list(df.columns.values)[5:-1]
+    return X,y,category_names
 
 
 def tokenize(text):
     """
     tokenize input text
     Input: 
-    text (str): text to be tokenized 
+        text (str): text to be tokenized 
     Output:
-    clean_tokens(): results 
+        clean_tokens(): results 
     """
+
     # sentence tokenize 
     sentences = sent_tokenize(text)
     
@@ -74,17 +77,65 @@ def tokenize(text):
 
 
 def build_model():
-    
+    """
+    build a MultiOutputClassifier model using GridSearch
+    Input:
+        None
+    Output:
+        cv_model (GridSearchCV): ML model     
+    """
+
+    pipeline = Pipeline([
+        ('features', FeatureUnion([
+            ('text_pipeline', Pipeline([
+                ('vect', CountVectorizer(tokenizer=tokenize)),
+                ('tfidf', TfidfTransformer())
+            ])),      
+        ])),
+
+        ('clf', MultiOutputClassifier(RandomForestClassifier()))
+    ])
+
+    parameters = {
+        'clf__estimator__min_samples_split': [2, 3, 4]
+    }
+
+    cv_model = GridSearchCV(pipeline, param_grid = parameters,n_jobs=-1)
 
     return cv_model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+    """
+    Evaluate the model 
+    Input: 
+        model: ML model 
+        X_test (matrix), Y_test (matrix): test data 
+        category_names (list): category names 
+    Output:
+        none
+    """
+
+    y_pred = model.predict(X_test)
+    print(classification_report(Y_test, y_pred,target_names=category_names))
 
 
 def save_model(model, model_filepath):
-    pass
+
+    """
+    save the model 
+
+    Input:
+    model : trained model 
+    model_filepath(str) : path to save the model 
+
+    Output: 
+    none 
+    """
+
+    from sklearn.externals import joblib
+    joblib.dump(model, model_filepath)
+
 
 
 def main():
