@@ -40,7 +40,7 @@ def load_data(database_filepath):
     path_str = 'sqlite:///' + database_filepath
     engine = create_engine(path_str)
     table_name = engine.table_names()
-    df = pd.read_sql_table(table_name, con = engine)
+    df = pd.read_sql_table(table_name[0], con = engine)
     X = df.iloc[:,1].values
     y = df.iloc[:,5:-1].values
     category_names = list(df.columns.values)[5:-1]
