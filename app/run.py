@@ -2,8 +2,15 @@ import json
 import plotly
 import pandas as pd
 
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+stop_words = set(stopwords.words('english')) 
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+import re 
 
 from flask import Flask
 from flask import render_template, request, jsonify
@@ -14,24 +21,41 @@ from sqlalchemy import create_engine
 
 app = Flask(__name__)
 
-def tokenize(text):
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
 
+def tokenize(text):
+    """
+    tokenize input text
+    Input: 
+        text (str): text to be tokenized 
+    Output:
+        clean_tokens(): results 
+    """
+
+    # sentence tokenize 
+    sentences = sent_tokenize(text)
+    
+    lemmatizer = WordNetLemmatizer()
     clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
+    for sent_ in sentences:
+        # normalization 
+        text = re.sub(r"[^a-zA-Z0-9]", " ", sent_.lower())
+        # tokenize 
+        words = word_tokenize(text)
+        # remove stop words 
+        words = [word for word in words if not word in stop_words]
+        # lemmatization
+        for word in words:
+            clean_tok = lemmatizer.lemmatize(word).lower().strip()
+            clean_tokens.append(clean_tok)
 
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/disaster.db')
-df = pd.read_sql_table('disaster', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('data/DisasterResponse.db', engine)
 
 # load model
-# model = joblib.load("../models/your_model_name.pkl")
-model = joblib.load("../final_model.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
@@ -39,12 +63,10 @@ model = joblib.load("../final_model.pkl")
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
