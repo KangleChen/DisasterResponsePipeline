@@ -38,8 +38,8 @@ def load_data(database_filepath):
     """
 
     path_str = 'sqlite:///' + database_filepath
-    table_name = engine.table_names()
     engine = create_engine(path_str)
+    table_name = engine.table_names()
     df = pd.read_sql_table(table_name, con = engine)
     X = df.iloc[:,1].values
     y = df.iloc[:,5:-1].values
