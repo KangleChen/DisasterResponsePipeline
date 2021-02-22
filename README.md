@@ -2,9 +2,7 @@
 Project of  Udacity Data Scientist Nanodegree Program
 
 ### Table of Contents
-
-- [DisasterResponsePipeline](#disasterresponsepipeline)
-    - [Table of Contents](#table-of-contents)
+- [Table of Contents](#table-of-contents)
   - [Installation <a name="installation"></a>](#installation-)
   - [Project Motivation<a name="motivation"></a>](#project-motivation)
   - [File Descriptions <a name="files"></a>](#file-descriptions-)
