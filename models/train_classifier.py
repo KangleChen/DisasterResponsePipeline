@@ -97,7 +97,7 @@ def build_model():
     ])
 
     parameters = {
-        'clf__estimator__min_samples_split': [2, 3, 4]
+        'clf__estimator__min_samples_split': [2, 3]
     }
 
     cv_model = GridSearchCV(pipeline, param_grid = parameters,n_jobs=-1)

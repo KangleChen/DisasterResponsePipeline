@@ -2,7 +2,8 @@
 Project of  Udacity Data Scientist Nanodegree Program
 
 ### Table of Contents
-- [Table of Contents](#table-of-contents)
+- [DisasterResponsePipeline](#disasterresponsepipeline)
+    - [Table of Contents](#table-of-contents)
   - [Installation <a name="installation"></a>](#installation-)
   - [Project Motivation<a name="motivation"></a>](#project-motivation)
   - [File Descriptions <a name="files"></a>](#file-descriptions-)
@@ -47,7 +48,9 @@ There are 3 directories here.
 
 ## Results and Discussion<a name="results"></a>
 
-It should be pointed out, there is still much room for imporvement. An obvious problem is the data is imbalanced, which has stongly influenced the accuracy and precison of the trained model. Another improvement is to employ the model in a cloud server rather than locally. 
+It should be pointed out, there is still much room for imporvement. An obvious problem is the data is imbalanced, which has stongly influenced the accuracy and precison of the trained model. 
+Another improvement is to employ the model in a cloud server rather than locally. 
+Finally, due to the restriction of computation power, `GridSearchCV` here is only to demonstrate the pipeline to employ it rather than to provide optimized trained results. 
 
 ## Licensing, Authors, Acknowledgements<a name="licensing"></a>
 
